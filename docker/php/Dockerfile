@@ -2,9 +2,6 @@ FROM php:7.2-fpm
 
 RUN apt-get update && apt-get install -y openssl git unzip
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer --version
-
 RUN docker-php-ext-install pdo pdo_mysql
 
 RUN pecl install xdebug
@@ -21,11 +18,9 @@ RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 
 WORKDIR /var/www/jobs
 
-RUN mkdir vendor
 RUN mkdir /var/cache/prod
 RUN mkdir /var/logs
 RUN mkdir /var/sessions
 RUN chown -R www-data:www-data /var/cache
 RUN chown -R www-data:www-data /var/logs
 RUN chown -R www-data:www-data /var/sessions
-USER www-data
