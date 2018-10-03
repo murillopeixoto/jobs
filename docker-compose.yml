@@ -1,0 +1,40 @@
+version: '3'
+services:
+  nginx:
+    build: docker/nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/nginx/logs/:/var/log/nginx
+      - ./jobs:/var/www/jobs
+  php:
+    build: docker/php
+    restart: always
+    volumes:
+      - ./jobs:/var/www/jobs
+  #  composer:
+#    image: "composer"
+#    volumes:
+#    - "./jobs/:/app"
+#    command: install
+#    depends_on:
+#      - db
+  db:
+    image: mysql:8.0.12
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: jobs
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+    - 8080:8080
+    depends_on:
+      - db
+  composer:
+    image: composer:1.7.2
+    volumes:
+    - "./jobs/:/app"
+    command: install
