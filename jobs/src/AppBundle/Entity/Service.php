@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ServiceRepository")
  */
-class Service
+class Service implements EntityInterface
 {
     /**
      * @ORM\Id()
@@ -30,22 +30,18 @@ class Service
      */
     private $name;
 
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
+    public function __construct(int $id, String $name)
     {
-        return $this->id;
+        $this->id = $id;
+        $this->name = $name;
     }
 
     /**
-     * @param int $id
-     * @return Service
+     * @return int
      */
-    public function setId(int $id)
+    public function getId(): int
     {
-        $this->id = $id;
-        return $this;
+        return $this->id;
     }
 
     /**
@@ -54,16 +50,5 @@ class Service
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return Service
-     */
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 }

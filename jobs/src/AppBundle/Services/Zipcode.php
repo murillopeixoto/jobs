@@ -2,18 +2,19 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Repository\ServiceRepository;
+use AppBundle\Repository\ZipcodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class Service extends AbstractService
+
+class Zipcode extends AbstractService
 {
     /**
      * Service constructor.
-     * @param ServiceRepository $repository
+     * @param ZipcodeRepository $repository
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        ServiceRepository $repository,
+        ZipcodeRepository $repository,
         EntityManagerInterface $entityManager
     ) {
         $this->repository = $repository;

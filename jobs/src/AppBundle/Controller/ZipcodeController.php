@@ -2,9 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Service as ServiceEntity;
-use AppBundle\Form\ServiceType;
-use AppBundle\Services\Service;
+use AppBundle\Entity\Zipcode as ZipcodeEntity;
+use AppBundle\Services\Zipcode;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,30 +11,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
-class ServiceController extends FOSRestController
+class ZipcodeController extends FOSRestController
 {
     /**
-     * @Rest\Get("/service")
+     * @Rest\Get("/zipcode")
      * @return View
      */
     public function getAllAction(): View
     {
         return new View(
-            $this->container->get(Service::class)->findAll(),
+            $this->container->get(Zipcode::class)->findAll(),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Rest\Get("/service/{id}")
+     * @Rest\Get("/zipcode/{id}")
      *
-     * @param int id
+     * @param String id
      * @throws NotFoundHttpException
      * @return View
      */
-    public function getAction(int $id): View
+    public function getAction(String $id): View
     {
-        $service = $this->container->get(Service::class)->find($id);
+        $service = $this->container->get(Zipcode::class)->find($id);
         if (!$service) {
             throw new NotFoundHttpException(sprintf(
                 'The resource \'%s\' was not found.',
@@ -50,16 +49,16 @@ class ServiceController extends FOSRestController
     }
 
     /**
-     * @Rest\Post("/service")
+     * @Rest\Post("/zipcode")
      */
     public function postAction(Request $request): View
     {
         $parameters = $request->request->all();
         $attributes = $this->getAttributes($parameters);
         /** @todo: Implement a builder */
-        $service = new ServiceEntity($attributes['id'], $attributes['name']);
+        $service = new ZipcodeEntity($attributes['id'], $attributes['city']);
 
-        $persistedService = $this->container->get(Service::class)->create($service);
+        $persistedService = $this->container->get(Zipcode::class)->create($service);
 
         return new View(
             $persistedService,
@@ -75,7 +74,7 @@ class ServiceController extends FOSRestController
     {
         $attributes = [];
         $attributes['id'] = isset($parameters['id']) ? $parameters['id'] : null;
-        $attributes['name'] = isset($parameters['name']) ? $parameters['name'] : null;
+        $attributes['city'] = isset($parameters['city']) ? $parameters['city'] : null;
 
         return $attributes;
     }

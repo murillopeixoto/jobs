@@ -36,8 +36,7 @@ class ServicesTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->defaultEntity = new ServiceEntity();
-        $this->defaultEntity->setId(1)->setName('service');
+        $this->defaultEntity = new ServiceEntity(1, 'service');
     }
 
     public function testFindAllWithoutValueReturnsEmptyArray()
@@ -82,7 +81,7 @@ class ServicesTest extends WebTestCase
 
     /**
      * @expectedException Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-     * @expectedExceptionMessage id: This value should not be blank., name: This value should not be blank.
+     * @expectedExceptionMessage name: This value should not be blank.
      */
     public function testCreateWithInvalidServiceThrowsBadRequestHttpException()
     {
@@ -97,12 +96,12 @@ class ServicesTest extends WebTestCase
             ->method('flush');
 
         $service = new Service($this->repository, $this->entityManager);
-        $service->create(new ServiceEntity());
+        $service->create(new ServiceEntity(1, ''));
     }
 
     /**
      * @expectedException Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-     * @expectedExceptionMessage Service '1' already exists
+     * @expectedExceptionMessage Resource '1' already exists
      */
     public function testCreateWithDuplicatedServiceThrowsBadRequestHttpException()
     {
