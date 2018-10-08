@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "15dc3dd0-137e-484a-9d16-42d494e1ba7b",
+		"name": "Job actions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Service",
+			"item": [
+				{
+					"name": "Create Service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": 802030,\n\t\"name\": \"Abtransport, Entsorgung und Entrümpelung\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/service/802030",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"service",
+								"802030"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Zipcode",
+			"item": [
+				{
+					"name": "Create Zipcode",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \"01623\",\n\t\"city\": \"Lommatzsch\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/zipcode",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"zipcode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all zipcodes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/zipcode",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"zipcode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a zipcode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/zipcode/01623",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"zipcode",
+								"01623"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Job",
+			"item": [
+				{
+					"name": "Create Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serviceId\": 802031,\n\t\"zipcodeId\": \"01621\",\n\t\"title\": \"Job to be done\",\n\t\"description\": \"description\",\n\t\"dateToBeDone\": \"2018-11-11\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/job",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"job"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Jobs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/job",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"job"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a job",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/job/37c24b07-ca4c-11e8-8a95-0242ac130003",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"job",
+								"37c24b07-ca4c-11e8-8a95-0242ac130003"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all jobs with filtering",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/job?service=802030&zipcode=01621",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"job"
+							],
+							"query": [
+								{
+									"key": "service",
+									"value": "802030"
+								},
+								{
+									"key": "zipcode",
+									"value": "01621"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Job",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serviceId\": 802031,\n\t\"zipcodeId\": \"01621\",\n\t\"title\": \"Job to be done\",\n\t\"description\": \"description\",\n\t\"dateToBeDone\": \"2018-11-11\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/job/3e73969c-ca40-11e8-8a95-0242ac130003",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"job",
+								"3e73969c-ca40-11e8-8a95-0242ac130003"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
