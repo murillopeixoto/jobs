@@ -13,7 +13,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Tests\Functional\WebTestCase;
 use DateTime;
 
-class JobTest extends WebTestCase
+/**
+ * @group unit
+ */
+class JobTest extends AbstractServicesTest
 {
     /**
      * @var JobRepository
@@ -31,11 +34,6 @@ class JobTest extends WebTestCase
     private $zipcode;
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * @var JobEntity
      */
     private $defaultEntity;
@@ -47,6 +45,7 @@ class JobTest extends WebTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->repository = $this->getMockBuilder(JobRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['findAll', 'find'])
@@ -60,10 +59,6 @@ class JobTest extends WebTestCase
         $this->zipcode = $this->getMockBuilder(Zipcode::class)
             ->disableOriginalConstructor()
             ->setMethods(['find'])
-            ->getMock();
-
-        $this->entityManager = $this->getMockBuilder(EntityManagerInterface::class)
-            ->disableOriginalConstructor()
             ->getMock();
 
         $this->defaultEntity = new JobEntity(

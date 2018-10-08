@@ -15,7 +15,9 @@ class Job implements BuilderInterface
         $attributes['zipcodeId'] = $parameters['zipcodeId'] ?? null;
         $attributes['title'] = $parameters['title'] ?? null;
         $attributes['description'] = $parameters['description'] ?? null;
-        $attributes['dateToBeDone'] = new DateTime($parameters['dateToBeDone']) ?? null;
+        $attributes['dateToBeDone'] = isset($parameters['dateToBeDone'])
+            ? new DateTime($parameters['dateToBeDone'])
+            : null;
         $attributes['id'] = $parameters['id'] ?? null;
 
         return new JobEntity(

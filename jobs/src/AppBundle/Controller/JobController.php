@@ -68,7 +68,7 @@ class JobController extends AbstractController
 
         return new View(
             $persistedEntity,
-            Response::HTTP_CREATED
+            Response::HTTP_OK
         );
     }
 }

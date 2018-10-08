@@ -5,78 +5,71 @@ namespace Tests\AppBundle\Services;
 use AppBundle\Entity\Service as ServiceEntity;
 use AppBundle\Repository\ServiceRepository;
 use AppBundle\Services\Service;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ServiceTest extends WebTestCase
+/**
+ * @group unit
+ */
+class ServiceTest extends AbstractServicesTest
 {
     /**
      * @var ServiceRepository
      */
-    private $repository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private $serviceRepository;
 
     /**
      * @var ServiceEntity
      */
-    private $defaultEntity;
+    protected $defaultServiceEntity;
 
     public function setUp()
     {
-        $this->repository = $this->getMockBuilder(ServiceRepository::class)
+        parent::setUp();
+        $this->serviceRepository = $this->getMockBuilder(ServiceRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['findAll', 'find'])
             ->getMock();
 
-        $this->entityManager = $this->getMockBuilder(EntityManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->defaultEntity = new ServiceEntity(1, 'service');
+        $this->defaultServiceEntity = new ServiceEntity(1, 'service');
     }
 
     public function testFindAllWithoutValueReturnsEmptyArray()
     {
-        $this->repository
+        $this->serviceRepository
             ->expects($this->once())
             ->method('findAll')
             ->will($this->returnValue([]));
 
-        $service = new Service($this->repository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->entityManager);
         $this->assertEmpty($service->findAll());
     }
 
     public function testFindAllWithServicesFoundReturnsArrayWithServices()
     {
-        $this->repository
+        $this->serviceRepository
             ->expects($this->once())
             ->method('findAll')
-            ->will($this->returnValue([$this->defaultEntity]));
+            ->will($this->returnValue([$this->defaultServiceEntity]));
 
-        $service = new Service($this->repository, $this->entityManager);
-        $this->assertEquals([$this->defaultEntity], $service->findAll());
+        $service = new Service($this->serviceRepository, $this->entityManager);
+        $this->assertEquals([$this->defaultServiceEntity], $service->findAll());
     }
 
     public function testFindWhenServiceIsNotFoundReturnsNull()
     {
-        $service = new Service($this->repository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->entityManager);
         $this->assertNull($service->find(1));
     }
 
     public function testFindWhenServiceIsFoundReturnsService()
     {
-        $this->repository
+        $this->serviceRepository
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue($this->defaultEntity))
+            ->will($this->returnValue($this->defaultServiceEntity))
             ->with(1);
 
-        $service = new Service($this->repository, $this->entityManager);
-        $this->assertEquals($this->defaultEntity, $service->find(1));
+        $service = new Service($this->serviceRepository, $this->entityManager);
+        $this->assertEquals($this->defaultServiceEntity, $service->find(1));
     }
 
     /**
@@ -85,7 +78,7 @@ class ServiceTest extends WebTestCase
      */
     public function testCreateWithInvalidServiceThrowsBadRequestHttpException()
     {
-        $this->repository
+        $this->serviceRepository
             ->expects($this->never())
             ->method('find');
         $this->entityManager
@@ -95,7 +88,7 @@ class ServiceTest extends WebTestCase
             ->expects($this->never())
             ->method('flush');
 
-        $service = new Service($this->repository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->entityManager);
         $service->create(new ServiceEntity(1, ''));
     }
 
@@ -105,10 +98,10 @@ class ServiceTest extends WebTestCase
      */
     public function testCreateWithDuplicatedServiceThrowsBadRequestHttpException()
     {
-        $this->repository
+        $this->serviceRepository
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue($this->defaultEntity))
+            ->will($this->returnValue($this->defaultServiceEntity))
             ->with(1);
         $this->entityManager
             ->expects($this->never())
@@ -117,13 +110,13 @@ class ServiceTest extends WebTestCase
             ->expects($this->never())
             ->method('flush');
 
-        $service = new Service($this->repository, $this->entityManager);
-        $service->create($this->defaultEntity);
+        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service->create($this->defaultServiceEntity);
     }
 
     public function testCreateWithValidServiceReturnsPersistedService()
     {
-        $this->repository
+        $this->serviceRepository
             ->expects($this->once())
             ->method('find')
             ->will($this->returnValue(null))
@@ -131,12 +124,12 @@ class ServiceTest extends WebTestCase
         $this->entityManager
             ->expects($this->once())
             ->method('persist')
-            ->with($this->defaultEntity);
+            ->with($this->defaultServiceEntity);
         $this->entityManager
             ->expects($this->once())
             ->method('flush');
 
-        $service = new Service($this->repository, $this->entityManager);
-        $service->create($this->defaultEntity);
+        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service->create($this->defaultServiceEntity);
     }
 }

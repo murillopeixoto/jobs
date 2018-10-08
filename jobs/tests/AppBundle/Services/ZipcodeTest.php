@@ -5,50 +5,43 @@ namespace Tests\AppBundle\Services;
 use AppBundle\Entity\Zipcode as ZipcodeEntity;
 use AppBundle\Repository\ZipcodeRepository;
 use AppBundle\Services\Zipcode;
-use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Tests\Functional\WebTestCase;
 
-class ZipcodeTest extends WebTestCase
+/**
+ * @group unit
+ */
+class ZipcodeTest extends AbstractServicesTest
 {
     /**
      * @var ZipcodeRepository
      */
-    private $repository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    protected $zipcodeRepository;
 
     /**
      * @var ZipcodeEntity
      */
-    private $defaultEntity;
+    protected $defaultZipcodeEntity;
 
     public function setUp()
     {
-        $this->repository = $this->getMockBuilder(ZipcodeRepository::class)
+        parent::setUp();
+        $this->zipcodeRepository = $this->getMockBuilder(ZipcodeRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['findAll', 'find'])
             ->getMock();
 
-        $this->entityManager = $this->getMockBuilder(EntityManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->defaultEntity = new ZipcodeEntity('01623', 'Lommatzsch');
+        $this->defaultZipcodeEntity = new ZipcodeEntity('01623', 'Lommatzsch');
     }
 
     public function testFindWhenServiceIsFoundReturnsService()
     {
-        $this->repository
+        $this->zipcodeRepository
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue($this->defaultEntity))
+            ->will($this->returnValue($this->defaultZipcodeEntity))
             ->with('01623');
 
-        $zipcode = new Zipcode($this->repository, $this->entityManager);
-        $this->assertEquals($this->defaultEntity, $zipcode->find('01623'));
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
+        $this->assertEquals($this->defaultZipcodeEntity, $zipcode->find('01623'));
     }
 
     /**
@@ -57,7 +50,7 @@ class ZipcodeTest extends WebTestCase
      */
     public function testCreateZipcodeWithInvalidCityThrowsBadRequestHttpException()
     {
-        $this->repository
+        $this->zipcodeRepository
             ->expects($this->never())
             ->method('find');
         $this->entityManager
@@ -67,7 +60,7 @@ class ZipcodeTest extends WebTestCase
             ->expects($this->never())
             ->method('flush');
 
-        $zipcode = new Zipcode($this->repository, $this->entityManager);
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
         $zipcode->create(new ZipcodeEntity('12345', 'ab'));
     }
 
@@ -77,7 +70,7 @@ class ZipcodeTest extends WebTestCase
      */
     public function testCreateZipcodeWithInvalidIdThrowsBadRequestHttpException()
     {
-        $this->repository
+        $this->zipcodeRepository
             ->expects($this->never())
             ->method('find');
         $this->entityManager
@@ -87,13 +80,13 @@ class ZipcodeTest extends WebTestCase
             ->expects($this->never())
             ->method('flush');
 
-        $zipcode = new Zipcode($this->repository, $this->entityManager);
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
         $zipcode->create(new ZipcodeEntity('123456', 'city'));
     }
 
     public function testCreateWithValidZipcodeReturnsPersistedZipcode()
     {
-        $this->repository
+        $this->zipcodeRepository
             ->expects($this->once())
             ->method('find')
             ->will($this->returnValue(null))
@@ -101,12 +94,12 @@ class ZipcodeTest extends WebTestCase
         $this->entityManager
             ->expects($this->once())
             ->method('persist')
-            ->with($this->defaultEntity);
+            ->with($this->defaultZipcodeEntity);
         $this->entityManager
             ->expects($this->once())
             ->method('flush');
 
-        $zipcode = new Zipcode($this->repository, $this->entityManager);
-        $zipcode->create($this->defaultEntity);
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
+        $zipcode->create($this->defaultZipcodeEntity);
     }
 }
