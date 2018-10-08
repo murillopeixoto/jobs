@@ -67,8 +67,8 @@ class ZipcodeTest extends WebTestCase
             ->expects($this->never())
             ->method('flush');
 
-        $service = new Zipcode($this->repository, $this->entityManager);
-        $service->create(new ZipcodeEntity('12345', 'ab'));
+        $zipcode = new Zipcode($this->repository, $this->entityManager);
+        $zipcode->create(new ZipcodeEntity('12345', 'ab'));
     }
 
     /**
@@ -87,8 +87,8 @@ class ZipcodeTest extends WebTestCase
             ->expects($this->never())
             ->method('flush');
 
-        $service = new Zipcode($this->repository, $this->entityManager);
-        $service->create(new ZipcodeEntity('123456', 'city'));
+        $zipcode = new Zipcode($this->repository, $this->entityManager);
+        $zipcode->create(new ZipcodeEntity('123456', 'city'));
     }
 
     public function testCreateWithValidZipcodeReturnsPersistedZipcode()
@@ -106,7 +106,7 @@ class ZipcodeTest extends WebTestCase
             ->expects($this->once())
             ->method('flush');
 
-        $service = new Zipcode($this->repository, $this->entityManager);
-        $service->create($this->defaultEntity);
+        $zipcode = new Zipcode($this->repository, $this->entityManager);
+        $zipcode->create($this->defaultEntity);
     }
 }

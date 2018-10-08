@@ -30,7 +30,7 @@ class Service implements EntityInterface
      */
     private $name;
 
-    public function __construct(int $id, String $name)
+    public function __construct(int $id = null, String $name = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -39,7 +39,7 @@ class Service implements EntityInterface
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -47,7 +47,7 @@ class Service implements EntityInterface
     /**
      * @return null|string
      */
-    public function getName(): ?string
+    public function getName(): ?String
     {
         return $this->name;
     }

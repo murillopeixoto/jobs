@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 abstract class AbstractService
 {
-
     /**
      * @var ServiceEntityRepositoryInterface
      */
@@ -34,7 +33,7 @@ abstract class AbstractService
 
     /**
      * @param $id
-     * @return EntityInterface
+     * @return null|EntityInterface
      */
     public function find($id): ?EntityInterface
     {
@@ -54,6 +53,25 @@ abstract class AbstractService
      */
     public function create(EntityInterface $entity): EntityInterface
     {
+        $this->basicValidation($entity);
+
+        if ($this->find($entity->getId())) {
+            throw new BadRequestHttpException(sprintf(
+                'Resource \'%s\' already exists',
+                $entity->getId()
+            ));
+        }
+
+        return $this->save($entity);
+    }
+
+    /**
+     * @param EntityInterface $entity
+     * @throws BadRequestHttpException
+     * @todo extractToAnotherClass
+     */
+    protected function basicValidation(EntityInterface $entity): void
+    {
         /** @var RecursiveValidator $validator */
         $validator = Validation::createValidatorBuilder()
             ->enableAnnotationMapping()
@@ -66,25 +84,13 @@ abstract class AbstractService
 
             throw new BadRequestHttpException(implode($errorMessages, ', '));
         }
-
-        if ($this->find($entity->getId())) {
-            throw new BadRequestHttpException(sprintf(
-                'Resource \'%s\' already exists',
-                $entity->getId()
-            ));
-        }
-
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        return $entity;
     }
 
     /**
      * @param $errors
      * @return array
      */
-    protected function getErrorMessages($errors): array
+    private function getErrorMessages($errors): array
     {
         $errorMessages = [];
         /** @var ConstraintViolation $error */
@@ -97,5 +103,17 @@ abstract class AbstractService
         }
 
         return $errorMessages;
+    }
+
+    /**
+     * @param EntityInterface $entity
+     * @return EntityInterface
+     */
+    protected function save(EntityInterface $entity): EntityInterface
+    {
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        return $entity;
     }
 }

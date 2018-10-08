@@ -36,7 +36,7 @@ class Zipcode implements EntityInterface
      */
     private $city;
 
-    public function __construct(String $id, String $city)
+    public function __construct(String $id = null, String $city = null)
     {
         $this->id = $id;
         $this->city = $city;

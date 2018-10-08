@@ -5,7 +5,6 @@ namespace AppBundle\Services;
 use AppBundle\Repository\ZipcodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-
 class Zipcode extends AbstractService
 {
     /**

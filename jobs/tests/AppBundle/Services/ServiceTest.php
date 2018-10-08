@@ -8,7 +8,7 @@ use AppBundle\Services\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ServicesTest extends WebTestCase
+class ServiceTest extends WebTestCase
 {
     /**
      * @var ServiceRepository
