@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Persister\PersisterInterface;
 use AppBundle\Repository\ZipcodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -14,9 +15,9 @@ class Zipcode extends AbstractService
      */
     public function __construct(
         ZipcodeRepository $repository,
-        EntityManagerInterface $entityManager
+        PersisterInterface $persister
     ) {
         $this->repository = $repository;
-        $this->entityManager = $entityManager;
+        $this->persister = $persister;
     }
 }

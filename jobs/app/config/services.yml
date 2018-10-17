@@ -71,3 +71,6 @@ services:
     AppBundle\Services\Job:
         class: AppBundle\Services\Job
         public: true
+
+    persister:
+        class: AppBundle\Persister\DoctrinePersister

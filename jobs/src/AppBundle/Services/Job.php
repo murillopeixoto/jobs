@@ -3,6 +3,7 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\EntityInterface;
+use AppBundle\Persister\PersisterInterface;
 use AppBundle\Repository\JobRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -22,6 +23,11 @@ class Job extends AbstractService
     private $zipcode;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
      * Job constructor.
      * @param JobRepository $repository
      * @param EntityManagerInterface $entityManager
@@ -30,12 +36,14 @@ class Job extends AbstractService
         JobRepository $repository,
         Service $service,
         Zipcode $zipcode,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        PersisterInterface $persister
     ) {
         $this->repository = $repository;
         $this->service = $service;
         $this->zipcode = $zipcode;
         $this->entityManager = $entityManager;
+        $this->persister = $persister;
     }
 
     /**
@@ -71,7 +79,7 @@ class Job extends AbstractService
         $this->basicValidation($entity);
         $this->validateForeignKeys($entity);
 
-        return $this->save($entity);
+        return $this->persister->save($entity);
     }
 
     /**
@@ -93,7 +101,7 @@ class Job extends AbstractService
             ));
         }
 
-        return $this->save($entity);
+        return $this->persister->save($entity);
     }
 
     /**
@@ -114,22 +122,5 @@ class Job extends AbstractService
                 $entity->getZipcodeId()
             ));
         }
-    }
-
-    /**
-     * @param EntityInterface $entity
-     * @return EntityInterface
-     */
-    protected function save(EntityInterface $entity): EntityInterface
-    {
-        if (is_null($entity->getId())) {
-            $this->entityManager->persist($entity);
-        } else {
-            $this->entityManager->merge($entity);
-        }
-
-        $this->entityManager->flush();
-
-        return $entity;
     }
 }

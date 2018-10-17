@@ -40,7 +40,7 @@ class ZipcodeTest extends AbstractServicesTest
             ->will($this->returnValue($this->defaultZipcodeEntity))
             ->with('01623');
 
-        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->persister);
         $this->assertEquals($this->defaultZipcodeEntity, $zipcode->find('01623'));
     }
 
@@ -53,14 +53,11 @@ class ZipcodeTest extends AbstractServicesTest
         $this->zipcodeRepository
             ->expects($this->never())
             ->method('find');
-        $this->entityManager
+        $this->persister
             ->expects($this->never())
-            ->method('persist');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
+            ->method('save');
 
-        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->persister);
         $zipcode->create(new ZipcodeEntity('12345', 'ab'));
     }
 
@@ -73,14 +70,11 @@ class ZipcodeTest extends AbstractServicesTest
         $this->zipcodeRepository
             ->expects($this->never())
             ->method('find');
-        $this->entityManager
+        $this->persister
             ->expects($this->never())
-            ->method('persist');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
+            ->method('save');
 
-        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->persister);
         $zipcode->create(new ZipcodeEntity('123456', 'city'));
     }
 
@@ -91,15 +85,12 @@ class ZipcodeTest extends AbstractServicesTest
             ->method('find')
             ->will($this->returnValue(null))
             ->with('01623');
-        $this->entityManager
+        $this->persister
             ->expects($this->once())
-            ->method('persist')
+            ->method('save')
             ->with($this->defaultZipcodeEntity);
-        $this->entityManager
-            ->expects($this->once())
-            ->method('flush');
 
-        $zipcode = new Zipcode($this->zipcodeRepository, $this->entityManager);
+        $zipcode = new Zipcode($this->zipcodeRepository, $this->persister);
         $zipcode->create($this->defaultZipcodeEntity);
     }
 }

@@ -9,9 +9,8 @@ use AppBundle\Repository\JobRepository;
 use AppBundle\Services\Job;
 use AppBundle\Services\Service;
 use AppBundle\Services\Zipcode;
-use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Tests\Functional\WebTestCase;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @group unit
@@ -42,6 +41,11 @@ class JobTest extends AbstractServicesTest
      * @var JobEntity
      */
     private $persistedEntity;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
     public function setUp()
     {
@@ -76,6 +80,10 @@ class JobTest extends AbstractServicesTest
             new DateTime('2018-11-11'),
             'a1c59e8f-ca88-11e8-94bd-0242ac130005'
         );
+
+        $this->entityManager = $this->getMockBuilder(EntityManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     /**
@@ -101,7 +109,8 @@ class JobTest extends AbstractServicesTest
             $this->repository,
             $this->service,
             $this->zipcode,
-            $this->entityManager
+            $this->entityManager,
+            $this->persister
         );
         $job->create(new JobEntity(
             802031,
@@ -137,7 +146,8 @@ class JobTest extends AbstractServicesTest
             $this->repository,
             $this->service,
             $this->zipcode,
-            $this->entityManager
+            $this->entityManager,
+            $this->persister
         );
         $job->create(new JobEntity(
             802031,
@@ -174,7 +184,8 @@ class JobTest extends AbstractServicesTest
             $this->repository,
             $this->service,
             $this->zipcode,
-            $this->entityManager
+            $this->entityManager,
+            $this->persister
         );
         $job->create(new JobEntity(
             802031,
@@ -196,19 +207,17 @@ class JobTest extends AbstractServicesTest
             ->method('find')
             ->will($this->returnValue(new ZipcodeEntity()))
             ->with('01621');
-        $this->entityManager
+        $this->persister
             ->expects($this->once())
-            ->method('persist')
+            ->method('save')
             ->with($this->defaultEntity);
-        $this->entityManager
-            ->expects($this->once())
-            ->method('flush');
 
         $job = new Job(
             $this->repository,
             $this->service,
             $this->zipcode,
-            $this->entityManager
+            $this->entityManager,
+            $this->persister
         );
         $job->create($this->defaultEntity);
     }
@@ -244,7 +253,8 @@ class JobTest extends AbstractServicesTest
             $this->repository,
             $this->service,
             $this->zipcode,
-            $this->entityManager
+            $this->entityManager,
+            $this->persister
         );
         $job->update($this->persistedEntity);
     }
@@ -265,19 +275,18 @@ class JobTest extends AbstractServicesTest
             ->method('find')
             ->will($this->returnValue(new ZipcodeEntity()))
             ->with('01621');
-        $this->entityManager
+        $this->persister
             ->expects($this->once())
-            ->method('merge')
+            ->method('save')
+            ->will($this->returnValue($this->persistedEntity))
             ->with($this->persistedEntity);
-        $this->entityManager
-            ->expects($this->once())
-            ->method('flush');
 
         $job = new Job(
             $this->repository,
             $this->service,
             $this->zipcode,
-            $this->entityManager
+            $this->entityManager,
+            $this->persister
         );
         $job->update($this->persistedEntity);
     }

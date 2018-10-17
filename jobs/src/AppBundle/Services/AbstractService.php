@@ -3,8 +3,8 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\EntityInterface;
+use AppBundle\Persister\PersisterInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -19,9 +19,9 @@ abstract class AbstractService
     protected $repository;
 
     /**
-     * @var EntityManagerInterface
+     * @var PersisterInterface
      */
-    protected $entityManager;
+    protected $persister;
 
     /**
      * @return array
@@ -111,9 +111,6 @@ abstract class AbstractService
      */
     protected function save(EntityInterface $entity): EntityInterface
     {
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        return $entity;
+        return $this->persister->save($entity);
     }
 }

@@ -39,7 +39,7 @@ class ServiceTest extends AbstractServicesTest
             ->method('findAll')
             ->will($this->returnValue([]));
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->persister);
         $this->assertEmpty($service->findAll());
     }
 
@@ -50,13 +50,13 @@ class ServiceTest extends AbstractServicesTest
             ->method('findAll')
             ->will($this->returnValue([$this->defaultServiceEntity]));
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->persister);
         $this->assertEquals([$this->defaultServiceEntity], $service->findAll());
     }
 
     public function testFindWhenServiceIsNotFoundReturnsNull()
     {
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->persister);
         $this->assertNull($service->find(1));
     }
 
@@ -68,7 +68,7 @@ class ServiceTest extends AbstractServicesTest
             ->will($this->returnValue($this->defaultServiceEntity))
             ->with(1);
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->persister);
         $this->assertEquals($this->defaultServiceEntity, $service->find(1));
     }
 
@@ -81,14 +81,11 @@ class ServiceTest extends AbstractServicesTest
         $this->serviceRepository
             ->expects($this->never())
             ->method('find');
-        $this->entityManager
+        $this->persister
             ->expects($this->never())
-            ->method('persist');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
+            ->method('save');
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->persister);
         $service->create(new ServiceEntity(1, ''));
     }
 
@@ -103,14 +100,11 @@ class ServiceTest extends AbstractServicesTest
             ->method('find')
             ->will($this->returnValue($this->defaultServiceEntity))
             ->with(1);
-        $this->entityManager
+        $this->persister
             ->expects($this->never())
-            ->method('persist');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
+            ->method('save');
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->persister);
         $service->create($this->defaultServiceEntity);
     }
 
@@ -121,15 +115,12 @@ class ServiceTest extends AbstractServicesTest
             ->method('find')
             ->will($this->returnValue(null))
             ->with(1);
-        $this->entityManager
+        $this->persister
             ->expects($this->once())
-            ->method('persist')
+            ->method('save')
             ->with($this->defaultServiceEntity);
-        $this->entityManager
-            ->expects($this->once())
-            ->method('flush');
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->serviceRepository, $this->persister);
         $service->create($this->defaultServiceEntity);
     }
 }

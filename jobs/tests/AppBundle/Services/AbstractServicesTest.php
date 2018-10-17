@@ -2,19 +2,19 @@
 
 namespace Tests\AppBundle\Services;
 
-use Doctrine\ORM\EntityManagerInterface;
+use AppBundle\Persister\PersisterInterface;
 use FOS\RestBundle\Tests\Functional\WebTestCase;
 
 abstract class AbstractServicesTest extends WebTestCase
 {
     /**
-     * @var EntityManagerInterface
+     * @var PersisterInterface
      */
-    protected $entityManager;
+    protected $persister;
 
     public function setUp()
     {
-        $this->entityManager = $this->getMockBuilder(EntityManagerInterface::class)
+        $this->persister = $this->getMockBuilder(PersisterInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
